@@ -1,16 +1,16 @@
 import { loadConfigFromEnv, DotenvParseOutput, replaceHomeDir } from '../'
 
 /**
- * 根据Env文件获取数据
+ * 获取env文件数据
  */
-export function getEnvData(): DotenvParseOutput {
+export function getEnvData(): Record<string, DotenvParseOutput> {
   const config = loadConfigFromEnv()
 
-  if (!config || !config['ENVIRONMENT'] || config['ENVIRONMENT_VARIABLE']) return {}
+  if (!config || !config['ENVIRONMENT'] || !config['ENVIRONMENT_VARIABLE']) return {}
 
   const configEnv = config['ENVIRONMENT'].split(',')
   const configEnvData = config['ENVIRONMENT_VARIABLE'].split(',')
-  const result: Record<string, Record<string, string>> = {}
+  const result: Record<string, DotenvParseOutput> = {}
 
   configEnv.map((env) => {
     result[env] = {}
@@ -24,5 +24,15 @@ export function getEnvData(): DotenvParseOutput {
     })
   })
 
-  return config
+  result['default'] = result[configEnv[0]]
+  return result
+}
+
+// 根据env获取对应环境的数据
+export function getDataByEnv(env: string): DotenvParseOutput {
+  const datas = getEnvData()
+  if (Object.prototype.hasOwnProperty.call(datas, env)) {
+    return datas[env]
+  }
+  return {}
 }
