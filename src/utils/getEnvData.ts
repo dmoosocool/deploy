@@ -1,4 +1,4 @@
-import { loadConfigFromEnv, DotenvParseOutput, replaceHomeDir } from './'
+import { loadConfigFromEnv, DotenvParseOutput, replaceHomeDir } from '../'
 
 /**
  * 根据Env文件获取数据

@@ -1,4 +1,4 @@
-import { DotenvParseOutput } from './';
+import { DotenvParseOutput } from '../';
 /**
  * 根据Env文件获取数据
  */
