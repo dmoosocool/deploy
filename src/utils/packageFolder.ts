@@ -44,5 +44,3 @@ export function packageFolder(
     archive.finalize()
   })
 }
-
-packageFolder(path.resolve(process.cwd(), 'src'))

@@ -11,8 +11,11 @@
     "build": "tsc -d"
   },
   "dependencies": {
+    "@types/adm-zip": "^0.4.33",
     "@types/node": "^14.14.19",
+    "adm-zip": "^0.5.1",
     "archiver": "^5.1.0",
+    "crypto": "^1.0.1",
     "dayjs": "^1.10.2",
     "eslint-config-prettier": "^7.1.0",
     "node-ssh": "^11.1.1"

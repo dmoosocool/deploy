@@ -1,5 +1,8 @@
 import { loadConfigFromEnv, DotenvParseOutput, replaceHomeDir } from './'
 
+/**
+ * 根据Env文件获取数据
+ */
 export function getEnvData(): DotenvParseOutput {
   const config = loadConfigFromEnv()
 
