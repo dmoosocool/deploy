@@ -18,7 +18,7 @@ export async function runRemoteShell(serverConfig: Config, shell = ''): Promise<
   }
 
   // 检查是否为shell文件
-  if (shell.endsWith('.sh')) {
+  if (!shell.endsWith('.sh')) {
     throw new Error("The remote script executed must end with '.sh'")
   }
 

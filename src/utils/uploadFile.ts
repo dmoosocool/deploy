@@ -14,4 +14,5 @@ export async function uploadFile(localPath: string, remotePath: string): Promise
   const ssh = new NodeSSH()
   await ssh.connect(envDatas)
   await ssh.putFile(localPath, remotePath)
+  process.exit(0)
 }

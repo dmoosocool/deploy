@@ -1,10 +1,11 @@
 import { runRemoteShell } from '../src'
 runRemoteShell(
   {
-    host: '192.168.100.23',
-    port: 22,
-    username: 'ddd',
+    host: '127.0.0.1',
+    port: 2222,
+    username: 'root',
+    password: 'woshinidejia.',
     private_key: '~/.ssh/id_rsa',
   },
-  '/Users/dmoo/stg/test.sh'
+  '/root/stg/test.sh'
 )
