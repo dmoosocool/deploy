@@ -1,5 +1,6 @@
 import { DotenvParseOutput } from '../';
 /**
- * 根据Env文件获取数据
+ * 获取env文件数据
  */
-export declare function getEnvData(): DotenvParseOutput;
+export declare function getEnvData(): Record<string, DotenvParseOutput>;
+export declare function getDataByEnv(env: string): DotenvParseOutput;
