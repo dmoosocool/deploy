@@ -29,7 +29,7 @@ export function getEnvData(): Record<string, DotenvParseOutput> {
 }
 
 // 根据env获取对应环境的数据
-export function getDataByEnv(env: string): DotenvParseOutput {
+export function getDataByEnv(env = 'default'): DotenvParseOutput {
   const datas = getEnvData()
   if (Object.prototype.hasOwnProperty.call(datas, env)) {
     return datas[env]
