@@ -35,9 +35,20 @@ export function packageFolder(
   publishFolder: string = path.resolve(process.cwd())
 ): Promise<string> {
   return new Promise((resolve, reject) => {
+    if (!fs.existsSync(packageFolder)) {
+      reject('待上传路径不存在')
+    }
+
+    if (!fs.statSync(packageFolder).isDirectory()) {
+      reject('待上传路径不是一个目录')
+    }
+
     const zipfilename = dayjs().format('YYYYMMDDHHmmssSSS') + '.zip'
     const output = fs.createWriteStream(path.join(publishFolder, zipfilename))
     const archive = archiver('zip', { zlib: { level: 9 } })
+
+    // 如果待发布的目录不存在则递归创建目录.
+    createDirectoryAsync(publishFolder)
 
     output.on('close', () => {
       console.log(archive.pointer() + ' total bytes')
@@ -53,11 +64,8 @@ export function packageFolder(
       reject(err)
     })
 
-    // 如果待发布的目录不存在则递归创建目录.
-    createDirectoryAsync(path.dirname(packageFolder))
-
     archive.pipe(output)
-    archive.directory(path.join(packageFolder), false, { date: new Date() })
+    archive.directory(path.resolve(packageFolder), false, { date: new Date() })
     archive.finalize()
   })
 }
