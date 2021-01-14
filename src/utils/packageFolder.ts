@@ -4,6 +4,20 @@ import * as path from 'path'
 import * as fs from 'fs'
 
 /**
+ * 递归创建目录
+ */
+function createDirectoryAsync(dirname: string): boolean | undefined {
+  if (fs.existsSync(dirname)) {
+    return true
+  }
+
+  if (createDirectoryAsync(path.dirname(dirname))) {
+    fs.mkdirSync(dirname)
+    return true
+  }
+}
+
+/**
  * 将目录打包zip
  *
  * @param {String} packageFolder 需要打包的目录
@@ -38,6 +52,9 @@ export function packageFolder(
     archive.on('error', (err) => {
       reject(err)
     })
+
+    // 如果待发布的目录不存在则递归创建目录.
+    createDirectoryAsync(path.dirname(packageFolder))
 
     archive.pipe(output)
     archive.directory(path.join(packageFolder), false, { date: new Date() })
