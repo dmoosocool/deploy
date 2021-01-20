@@ -102,6 +102,21 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.19.tgz#5135176a8330b88ece4e9ab1fdcfc0a545b4bab4"
   integrity sha512-4nhBPStMK04rruRVtVc6cDqhu7S9GZai0fpXgPXrFpcPX6Xul8xnrjSdGB4KPBVYG/R5+fXWdCM8qBoiULWGPQ==
 
+"@types/ssh2-streams@*":
+  version "0.1.8"
+  resolved "http://10.8.14.12:4873/@types%2fssh2-streams/-/ssh2-streams-0.1.8.tgz#142af404dae059931aea7fcd1511b5478964feb6"
+  integrity sha1-FCr0BNrgWZMa6n/NFRG1R4lk/rY=
+  dependencies:
+    "@types/node" "*"
+
+"@types/ssh2@^0.5.46":
+  version "0.5.46"
+  resolved "http://10.8.14.12:4873/@types%2fssh2/-/ssh2-0.5.46.tgz#e12341a242aea0e98ac2dec89e039bf421fd3584"
+  integrity sha1-4SNBokKuoOmKwt7IngOb9CH9NYQ=
+  dependencies:
+    "@types/node" "*"
+    "@types/ssh2-streams" "*"
+
 "@typescript-eslint/eslint-plugin@^4.11.1":
   version "4.11.1"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-4.11.1.tgz#7579c6d17ad862154c10bc14b40e5427b729e209"
@@ -433,11 +448,6 @@ cross-spawn@^7.0.2:
     path-key "^3.1.0"
     shebang-command "^2.0.0"
     which "^2.0.1"
-
-crypto@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/crypto/-/crypto-1.0.1.tgz#2af1b7cad8175d24c8a1b0778255794a21803037"
-  integrity sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==
 
 dayjs@^1.10.2:
   version "1.10.2"
