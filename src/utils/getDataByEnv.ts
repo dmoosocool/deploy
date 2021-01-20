@@ -1,9 +1,9 @@
-import { loadConfigFromEnv, DotenvParseOutput, replaceHomeDir } from '../'
+import { loadConfigFromEnv, DotenvParseOutput, replaceHomeDir } from '..'
 
 /**
  * 获取env文件数据
  */
-export function getDataByEnv(env: string): DotenvParseOutput {
+export function getDataByEnv(env?: string): DotenvParseOutput {
   const config = loadConfigFromEnv()
 
   if (!config || !config['ENVIRONMENT'] || !config['ENVIRONMENT_VARIABLE']) return {}
@@ -17,7 +17,8 @@ export function getDataByEnv(env: string): DotenvParseOutput {
     result[env] = {}
     configEnvData.map((envData) => {
       const configEnvDataKey = [env.toUpperCase(), envData.toUpperCase()].join('_')
-
+      result[env].support = config['ENVIRONMENT']
+      result[env].currentEnv = env
       result[env][envData] =
         envData === 'private_key'
           ? replaceHomeDir(config[configEnvDataKey])
