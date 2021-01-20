@@ -176,3 +176,211 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub root@127.0.0.1 -p 2222
 ```bash
 ssh-keygen
 ```
+
+### 让 docker 中的 nginx 支持 vhost.
+以下操作是配置docker中的nginx
+1. 进入 `/usr/local/nginx/conf` 目录 修改 `nginx.conf` 文件, 在`http`的`server` 块下添加:
+
+   ```nginx
+   # include vhost.
+   include /usr/local/nginx/vhost/*.conf;
+   ```
+
+   完整的 `nginx.conf` 如下 :
+
+   ```nginx
+   #user  nobody;
+   worker_processes  1;
+   
+   #error_log  logs/error.log;
+   #error_log  logs/error.log  notice;
+   #error_log  logs/error.log  info;
+   
+   #pid        logs/nginx.pid;
+   
+   events {
+       worker_connections  1024;
+   }
+   
+   http {
+       include       mime.types;
+       default_type  application/octet-stream;
+   
+       #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+       #                  '$status $body_bytes_sent "$http_referer" '
+       #                  '"$http_user_agent" "$http_x_forwarded_for"';
+   
+       #access_log  logs/access.log  main;
+   
+       sendfile        on;
+       #tcp_nopush     on;
+   
+       #keepalive_timeout  0;
+       keepalive_timeout  65;
+   
+       #gzip  on;
+   
+       server {
+           listen       80;
+           server_name  localhost;
+   
+           #charset koi8-r;
+   
+           #access_log  logs/host.access.log  main;
+   
+           location / {
+               root   html;
+               index  index.html index.htm;
+           }
+   
+           #error_page  404              /404.html;
+   
+           # redirect server error pages to the static page /50x.html
+           #
+           error_page   500 502 503 504  /50x.html;
+           location = /50x.html {
+               root   html;
+           }
+   
+           # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+           #
+           #location ~ \.php$ {
+           #    proxy_pass   http://127.0.0.1;
+           #}
+   
+           # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+           #
+           #location ~ \.php$ {
+           #    root           html;
+           #    fastcgi_pass   127.0.0.1:9000;
+           #    fastcgi_index  index.php;
+           #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+           #    include        fastcgi_params;
+           #}
+   
+           # deny access to .htaccess files, if Apache's document root
+           # concurs with nginx's one
+           #
+           #location ~ /\.ht {
+           #    deny  all;
+           #}
+       }
+   
+       # include vhost
+       include /usr/local/nginx/vhost/*.conf;
+       
+       # another virtual host using mix of IP-, name-, and port-based configuration
+       #
+       #server {
+       #    listen       8000;
+       #    listen       somename:8080;
+       #    server_name  somename  alias  another.alias;
+   
+       #    location / {
+       #        root   html;
+       #        index  index.html index.htm;
+       #    }
+       #}
+   
+   
+       # HTTPS server
+       #
+       #server {
+       #    listen       443 ssl;
+       #    server_name  localhost;
+   
+       #    ssl_certificate      cert.pem;
+       #    ssl_certificate_key  cert.key;
+   
+       #    ssl_session_cache    shared:SSL:1m;
+       #    ssl_session_timeout  5m;
+   
+       #    ssl_ciphers  HIGH:!aNULL:!MD5;
+       #    ssl_prefer_server_ciphers  on;
+   
+       #    location / {
+       #        root   html;
+       #        index  index.html index.htm;
+       #    }
+       #}
+   
+   }
+   ```
+   
+2. 添加 `stg.sjkh.dev.conf`
+
+   ```nginx
+   server {
+     listen 80;
+     servername stg.sjkh;
+     access_log /www/logs/stg.sjkh.access.log main;
+   
+     location / {
+       root /www/stg.sjkh;
+       index index.html index.htm;
+     }
+   
+     error_page 500 502 503 504 /50x.html;
+   
+     location = /50x.html {
+       root /usr/local/nginx/html;
+     }
+   }
+   ```
+
+3. 修改 `/etc/host` 文件
+  ```shell
+  # 使用管理员权限编辑 /etc/host 文件
+  sudo vim /etc/hosts
+
+  # 在/etc/host文件中最下行添加
+  127.0.0.1 stg.sjkh
+
+  ```
+4. 修改本地`hosts`文件
+
+   ```shell
+   # 使用管理员权限编辑 /etc/host 文件
+   sudo vim /etc/hosts
+   
+   # 在/etc/host文件中最下行添加
+   127.0.0.1 stg.sjkh
+   ```
+
+5. 通过浏览器地址访问 [http://stg.sjkh:8081/](http://stg.sjkh:8081/) 访问 `docker nginx` 服务
+
+6. 【可选】本机 `nginx` 添加端口映射, `MacOs` 环境安装`Nginx`方法 同Docker中安装方法一致.
+  ```nginx
+     # 为本机nginx添加 vhost stg.sjkh的配置文件 /usr/local/nginx/conf/vhost/stg.sjkh.conf
+     server {
+       listen 80;
+       server_name stg.sjkh;
+       access_log /Users/{Your Name}/wwwroot/logs/stg.sjkh.access.log main;
+       error_log /Users/{Your Name}/wwwroot/logs/stg.sjkh.error.log;
+
+       location / {
+         proxy_pass http://127.0.0.1:8081;
+         proxy_set_header Host stg.sjkh;
+       }
+
+       # 和上面写法二选一
+       #location / {
+       #  proxy_pass http://stg.sjkh:8081;
+       #}
+     }
+  ```
+
+7. 通过浏览器地址访问 [http://stg.sjkh/](http://stg.sjkh/) 访问`docker nginx` 服务
+### 在docker容器中准备上传目录及脚本目录
+`/www/uploads` 文件夹作为后续上传压缩包的目录,
+`/www/shells`  文件夹作为后续执行上传完压缩包之后的脚本目录.
+
+```shell
+cd /www
+mkdir uploads
+mkdir shells
+```
+
+
+### 常见问题
+Q: 当机器重启后 通过`docker ps -a` 查询到容器 `Status` 为 `Exist`, 使用命令: `docker container start [容器id]` 进行唤醒.
