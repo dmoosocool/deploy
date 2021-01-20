@@ -8,7 +8,7 @@ import { getDataByEnv } from '../'
  * @param remotePath 需要上传到远程服务器的路径
  */
 export async function uploadFile(localPath: string, remotePath: string): Promise<void> {
-  const envDatas: Config = getDataByEnv(process.env.UPLOAD_ENV || 'default')
+  const envDatas: Config = getDataByEnv(process.env.UPLOAD_ENV)
   const ssh = new NodeSSH()
   await ssh.connect(envDatas)
   await ssh.putFile(localPath, remotePath)
