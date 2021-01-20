@@ -9,10 +9,8 @@ import { getDataByEnv } from '../'
  */
 export async function uploadFile(localPath: string, remotePath: string): Promise<void> {
   const envDatas: Config = getDataByEnv(process.env.UPLOAD_ENV || 'default')
-
-  console.log(envDatas)
   const ssh = new NodeSSH()
   await ssh.connect(envDatas)
   await ssh.putFile(localPath, remotePath)
-  process.exit(0)
+  ssh.dispose()
 }

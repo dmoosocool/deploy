@@ -25,5 +25,6 @@ export async function runRemoteShell(serverConfig: Config, shell = ''): Promise<
   // 执行远程主机上的shell文件.
   const result = await ssh.execCommand(`sh ${shell}`)
   console.log(result.stdout)
-  process.exit(0)
+
+  ssh.dispose()
 }
