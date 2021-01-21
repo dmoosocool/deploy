@@ -5,4 +5,6 @@ import { getDataByEnv } from './utils/getDataByEnv';
 import { packageFolder } from './utils/packageFolder';
 import { generateIncrementalPackage } from './utils/generateIncrementalPackage';
 import { uploadFile } from './utils/uploadFile';
-export { runRemoteShell, loadConfigFromEnv, DotenvParseOutput, replaceHomeDir, getDataByEnv, packageFolder, generateIncrementalPackage, uploadFile, };
+import { createDirectoryAsync } from './utils/createDirectoryAsync';
+import { generateUniqueString } from './utils/generateUniqueString';
+export { runRemoteShell, loadConfigFromEnv, DotenvParseOutput, replaceHomeDir, getDataByEnv, packageFolder, generateIncrementalPackage, uploadFile, createDirectoryAsync, generateUniqueString, };

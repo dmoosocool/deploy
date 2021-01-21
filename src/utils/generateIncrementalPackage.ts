@@ -2,18 +2,15 @@ import AdmZip from 'adm-zip'
 import crypto from 'crypto'
 import * as fs from 'fs'
 import * as path from 'path'
-
+import { createDirectoryAsync, generateUniqueString, replaceHomeDir } from '../'
 /**
  * 根据文件路劲返回文件md5
  *
- * @param file 需要加密文件的路径
+ * @param file 需要加密文件的内容
  */
 function encryptFile(file: string): string {
-  if (!fs.existsSync(file)) return ''
-
-  const content = fs.readFileSync(file, 'utf8')
   const md5 = crypto.createHash('md5')
-  md5.update(content)
+  md5.update(file)
   return md5.digest('hex')
 }
 
@@ -24,12 +21,20 @@ function encryptFile(file: string): string {
  */
 function encryptZipFile(zipFile: string): Record<string, string> {
   const entries = new AdmZip(zipFile).getEntries()
-  const filesHash: Record<string, string> = {}
+  const filesHash: Record<string, any> = {}
   entries.forEach((entry) => {
     // 过滤掉目录和MacOS自动生成的目录
-    if (entry.isDirectory || entry.entryName.indexOf('__MACOSX') > -1) return true
-    const md5 = encryptFile(entry.entryName)
-    filesHash[entry.entryName] = md5
+    if (
+      entry.isDirectory ||
+      entry.entryName.indexOf('__MACOSX') > -1 ||
+      entry.entryName.indexOf('.DS_Store') > -1
+    )
+      return true
+    const md5 = encryptFile(entry.getData().toString('utf8'))
+    filesHash[entry.entryName] = {
+      hash: md5,
+      content: entry.getData().toString('utf8'),
+    }
   })
   return filesHash
 }
@@ -41,14 +46,17 @@ function encryptZipFile(zipFile: string): Record<string, string> {
  * @param olderZipFileHash 较旧的zip包文件hash
  */
 function diffZipFileHash(
-  newerZipFileHash: Record<string, string>,
-  olderZipFileHash: Record<string, string>
-): Array<string> {
-  const diffFile: Array<string> = []
-
+  newerZipFileHash: Record<string, any>,
+  olderZipFileHash: Record<string, any>
+): Record<string, any> {
+  const diffFile: Record<string, any> = {}
   Object.keys(newerZipFileHash).forEach((entryName: string) => {
-    if (newerZipFileHash[entryName] !== olderZipFileHash[entryName]) {
-      diffFile.push(entryName)
+    if (
+      entryName.indexOf('.DS_Store') === -1 &&
+      (olderZipFileHash[entryName] === undefined ||
+        newerZipFileHash[entryName].hash !== olderZipFileHash[entryName].hash)
+    ) {
+      diffFile[entryName] = newerZipFileHash[entryName]
     }
   })
   return diffFile
@@ -57,14 +65,14 @@ function diffZipFileHash(
 /**
  * 根据一组文件数组生成zip包
  *
- * @param {Array<string>} filesArray
+ * @param {Record<string, any>} filesObject
  * @param {string} zipname
  */
-function filesArrayToZip(filesArray: Array<string>, zipname: string): void {
+function filesArrayToZip(filesObject: Record<string, any>, zipname: string): void {
   const zip = new AdmZip()
-  filesArray.forEach((file: string) => {
-    const fileData = fs.readFileSync(file, { encoding: 'utf8' })
-    zip.addFile(file, Buffer.alloc(fileData.length, fileData))
+  Object.keys(filesObject).forEach((entry: string) => {
+    const fileData = Buffer.from(filesObject[entry].content, 'utf8')
+    zip.addFile(entry, Buffer.alloc(fileData.length, fileData))
   })
   zip.writeZip(path.resolve(zipname))
 }
@@ -74,12 +82,31 @@ function filesArrayToZip(filesArray: Array<string>, zipname: string): void {
  *
  * @param {string} newzip 较新的zip资源包路径
  * @param {string} oldzip 较旧的zip资源包路径
+ * @param {string} incrementalPath 生成的增量包所在的路径
  */
-export function generateIncrementalPackage(newzip: string, oldzip: string): void {
+export function generateIncrementalPackage(
+  newzip: string,
+  oldzip: string,
+  incrementalPath: string
+): string {
+  // 如果包含有 '~' 则会替换至用户目录
+  incrementalPath = replaceHomeDir(incrementalPath)
+  newzip = replaceHomeDir(newzip)
+  oldzip = replaceHomeDir(oldzip)
+
   const newer = encryptZipFile(newzip)
   const older = encryptZipFile(oldzip)
   const diffArray = diffZipFileHash(newer, older)
-  filesArrayToZip(diffArray, path.resolve(process.cwd(), 'dist'))
 
-  return void 0
+  // 如果生成的增量包路径不存在 则递归创建
+  if (!fs.existsSync(incrementalPath)) {
+    createDirectoryAsync(incrementalPath)
+  }
+
+  const incrementalZipPath = path.resolve(
+    path.join(incrementalPath, `${generateUniqueString()}.zip`)
+  )
+  filesArrayToZip(diffArray, incrementalZipPath)
+
+  return incrementalZipPath
 }

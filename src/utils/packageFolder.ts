@@ -1,21 +1,7 @@
 import archiver from 'archiver'
-import dayjs from 'dayjs'
 import * as path from 'path'
 import * as fs from 'fs'
-
-/**
- * 递归创建目录
- */
-function createDirectoryAsync(dirname: string): boolean | undefined {
-  if (fs.existsSync(dirname)) {
-    return true
-  }
-
-  if (createDirectoryAsync(path.dirname(dirname))) {
-    fs.mkdirSync(dirname)
-    return true
-  }
-}
+import { createDirectoryAsync, generateUniqueString } from '../'
 
 /**
  * 将目录打包zip
@@ -43,7 +29,7 @@ export function packageFolder(
       reject('待上传路径不是一个目录')
     }
 
-    const zipfilename = dayjs().format('YYYYMMDDHHmmssSSS') + '.zip'
+    const zipfilename = `${generateUniqueString()}.zip`
     const output = fs.createWriteStream(path.join(publishFolder, zipfilename))
     const archive = archiver('zip', { zlib: { level: 9 } })
 
