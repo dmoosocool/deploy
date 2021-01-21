@@ -103,10 +103,13 @@ export function generateIncrementalPackage(
     createDirectoryAsync(incrementalPath)
   }
 
-  const incrementalZipPath = path.resolve(
-    path.join(incrementalPath, `${generateUniqueString()}.zip`)
-  )
-  filesArrayToZip(diffArray, incrementalZipPath)
+  let incrementalZipPath = ''
+
+  // 如果存在差异数据才生成增量包. 不存在则返回空字符串
+  if (Object.keys(diffArray).length > 0) {
+    filesArrayToZip(diffArray, incrementalZipPath)
+    incrementalZipPath = path.resolve(path.join(incrementalPath, `${generateUniqueString()}.zip`))
+  }
 
   return incrementalZipPath
 }

@@ -37,12 +37,10 @@ export function packageFolder(
     createDirectoryAsync(publishFolder)
 
     output.on('close', () => {
-      console.log(archive.pointer() + ' total bytes')
       resolve(path.join(publishFolder, zipfilename))
     })
 
     output.on('end', () => {
-      console.log('Data has been drained')
       resolve(path.join(publishFolder, zipfilename))
     })
 
