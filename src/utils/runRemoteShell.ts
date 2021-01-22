@@ -17,8 +17,13 @@ export async function runRemoteShell(serverConfig: Config, shell = ''): Promise<
     throw new Error(err)
   }
 
+  // 兼容shell文件传参数的写法
+  let shellFile = shell
+  if (shell.indexOf(' ') > -1) {
+    shellFile = shell.split(' ')[0]
+  }
   // 检查是否为shell文件
-  if (!shell.endsWith('.sh')) {
+  if (!shellFile.endsWith('.sh')) {
     throw new Error("The remote script executed must end with '.sh'")
   }
 
