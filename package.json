@@ -12,7 +12,7 @@
     "build:types": "tsc src/**/*.ts --declaration --emitDeclarationOnly --allowSyntheticDefaultImports --outDir types",
     "build:lib": "tsc -b",
     "build": "npm run build:types && npm run build:lib",
-    "test": "mocha --reporter spec --require ts-node/register 'test/**/*.test.ts'",
+    "test": "npx mocha --reporter spec --require ts-node/register 'test/**/*.test.ts'",
     "publish": "npm publish --access public"
   },
   "dependencies": {
@@ -20,8 +20,8 @@
     "@types/archiver": "^5.1.0",
     "@types/node": "^14.14.19",
     "@types/ssh2": "^0.5.46",
-    "@typescript-eslint/eslint-plugin": "^4.11.1",
-    "@typescript-eslint/parser": "^4.11.1",
+    "@typescript-eslint/eslint-plugin": "^4.22.1",
+    "@typescript-eslint/parser": "^4.22.1",
     "adm-zip": "^0.5.1",
     "archiver": "^5.1.0",
     "dayjs": "^1.10.2",
@@ -35,7 +35,8 @@
     "@types/chai": "^4.2.18",
     "@types/mocha": "^8.2.2",
     "chai": "^4.3.4",
-    "eslint": "^7.17.0",
+    "eslint": "^7.26.0",
+    "eslint-plugin-prettier": "^3.4.0",
     "mocha": "^8.4.0",
     "prettier": "2.2.1",
     "ts-node": "^9.1.1"
