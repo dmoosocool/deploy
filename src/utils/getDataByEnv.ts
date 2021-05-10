@@ -1,13 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { loadConfigFromEnv, replaceHomeDir } from '..'
 
 /**
  * 获取env文件数据
  */
-export function getDataByEnv(env?: string): Record<string, any> {
+export function getDataByEnv(env?: string): Record<string, unknown> {
   const config = loadConfigFromEnv()
-  let sjkhConfig: Record<string, any> = {}
+  let sjkhConfig: Record<string, unknown> = {}
 
   if (
     !config ||

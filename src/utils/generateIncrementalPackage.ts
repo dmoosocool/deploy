@@ -1,8 +1,18 @@
-import AdmZip from 'adm-zip'
-import crypto from 'crypto'
+import AdmZip = require('adm-zip')
+import crypto = require('crypto')
 import * as fs from 'fs'
 import * as path from 'path'
 import { createDirectoryAsync, generateUniqueString, replaceHomeDir } from '../'
+
+interface IFileHash {
+  hash: string
+  content: string
+}
+
+interface IFileHashList {
+  [key: string]: IFileHash
+}
+
 /**
  * 根据文件路劲返回文件md5
  *
@@ -19,9 +29,9 @@ function encryptFile(file: string): string {
  *
  * @param zipFile zip文件路径
  */
-function encryptZipFile(zipFile: string): Record<string, string> {
+function encryptZipFile(zipFile: string): IFileHashList {
   const entries = new AdmZip(zipFile).getEntries()
-  const filesHash: Record<string, any> = {}
+  const filesHash: IFileHashList = {}
   entries.forEach((entry) => {
     // 过滤掉目录和MacOS自动生成的目录
     if (
@@ -46,10 +56,10 @@ function encryptZipFile(zipFile: string): Record<string, string> {
  * @param olderZipFileHash 较旧的zip包文件hash
  */
 function diffZipFileHash(
-  newerZipFileHash: Record<string, any>,
-  olderZipFileHash: Record<string, any>
-): Record<string, any> {
-  const diffFile: Record<string, any> = {}
+  newerZipFileHash: IFileHashList,
+  olderZipFileHash: IFileHashList
+): IFileHashList {
+  const diffFile: IFileHashList = {}
   Object.keys(newerZipFileHash).forEach((entryName: string) => {
     if (
       entryName.indexOf('.DS_Store') === -1 &&
@@ -65,10 +75,10 @@ function diffZipFileHash(
 /**
  * 根据一组文件数组生成zip包
  *
- * @param {Record<string, any>} filesObject
+ * @param {IFileHashList} filesObject
  * @param {string} zipname
  */
-function filesArrayToZip(filesObject: Record<string, any>, zipname: string): void {
+function filesArrayToZip(filesObject: IFileHashList, zipname: string): void {
   const zip = new AdmZip()
   Object.keys(filesObject).forEach((entry: string) => {
     const fileData = Buffer.from(filesObject[entry].content, 'utf8')
