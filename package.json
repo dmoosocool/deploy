@@ -1,6 +1,6 @@
 {
-  "name": "@DreamerMonster/deploy",
-  "version": "0.0.1",
+  "name": "@dmoosocool/deploy",
+  "version": "1.0.2",
   "main": "lib/index.js",
   "files": [
     "./lib",
@@ -8,7 +8,7 @@
   ],
   "types": "types/index.d.ts",
   "license": "MIT",
-  "repository":"https://github.com/DreamerMonster/fast-deploy-ts",
+  "repository": "https://github.com/dmoosocool/deploy",
   "scripts": {
     "build:types": "tsc src/**/*.ts --declaration --emitDeclarationOnly --allowSyntheticDefaultImports --outDir types",
     "build:lib": "tsc -b",
