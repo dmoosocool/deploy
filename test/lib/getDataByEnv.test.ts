@@ -32,4 +32,19 @@ describe('@dmoosocool/deploy `getDataByEnv`', () => {
 
     expect(stgEnvDatas._env).to.equal('stg')
   })
+
+  it('get uat config datas by "uat" env string', () => {
+    const uatEnvDatas = getDataByEnv('uat')
+    expect(uatEnvDatas).to.contains.keys(
+      '_env',
+      '_supportedEnv',
+      'host',
+      'port',
+      'username',
+      'password',
+      'private_key'
+    )
+
+    expect(uatEnvDatas._env).to.equal('uat')
+  })
 })

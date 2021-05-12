@@ -1,4 +1,6 @@
 node_modules
 .DS_Store
-lib
-types
+/lib
+/types
+/test/test-create-directory-async
+/test/publish
