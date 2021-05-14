@@ -39,5 +39,7 @@ export function getDataByEnv(env?: string): Record<string, unknown> {
         : config[configEnvDataKey]
   })
 
+  sjkhConfig['privateKey'] = sjkhConfig['private_key']
+  delete sjkhConfig['private_key']
   return sjkhConfig
 }

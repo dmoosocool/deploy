@@ -1,6 +1,6 @@
 {
   "name": "@dmoosocool/deploy",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "main": "lib/index.js",
   "files": [
     "/lib",
@@ -14,7 +14,8 @@
     "build:lib": "tsc -b",
     "build": "npm run build:types && npm run build:lib",
     "test": "npx mocha --reporter spec --require ts-node/register 'test/**/*.test.ts'",
-    "publish": "npm publish --access public"
+    "clean": "rm -rf lib types",
+    "npm": "npm run clean && npm run build && npm publish --access public"
   },
   "dependencies": {
     "adm-zip": "^0.5.1",

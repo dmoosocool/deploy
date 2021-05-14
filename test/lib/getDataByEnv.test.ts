@@ -12,7 +12,7 @@ describe('@dmoosocool/deploy `getDataByEnv`', () => {
       'port',
       'username',
       'password',
-      'private_key'
+      'privateKey'
     )
 
     expect(defaultEnvDatas._env).to.equal('stg')
@@ -27,7 +27,7 @@ describe('@dmoosocool/deploy `getDataByEnv`', () => {
       'port',
       'username',
       'password',
-      'private_key'
+      'privateKey'
     )
 
     expect(stgEnvDatas._env).to.equal('stg')
@@ -42,7 +42,7 @@ describe('@dmoosocool/deploy `getDataByEnv`', () => {
       'port',
       'username',
       'password',
-      'private_key'
+      'privateKey'
     )
 
     expect(uatEnvDatas._env).to.equal('uat')
